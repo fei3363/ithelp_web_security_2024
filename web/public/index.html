@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試網頁應用</title>
+    <style>
+        body { font-family: "微軟正黑體", Arial, sans-serif; text-align: center; padding-top: 50px; }
+        #message { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>歡迎來到測試網頁</h1>
+    <p>這是一個由 Express.js 建立的簡單測試頁面</p>
+    <button onclick="fetchMessage()">從 API 取得資訊</button>
+    <div id="message"></div>
+
+    <script>
+        function fetchMessage() {
+            fetch('/api/hello')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('message').innerText = data.message;
+                })
+                .catch(error => console.error('錯誤:', error));
+        }
+    </script>
+</body>
+</html>
