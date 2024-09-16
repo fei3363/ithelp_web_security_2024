@@ -1,0 +1,35 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試網頁</title>
+    <style>
+        body { font-family: "微軟正黑體", Arial, sans-serif; text-align: center; padding-top: 50px; }
+        #message { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+    
+<h1>歡迎來到測試網頁</h1>
+
+
+
+<h2> GET 請求</h2>
+<!-- 搜尋 -->
+<form action="/search" method="get">
+    <input type="text" name="keyword" placeholder="請輸入關鍵字">
+    <input type="submit" value="搜尋">
+</form>
+
+
+<h2> POST 表單</h2>
+<!-- 登入 -->
+<form action="/submit" method="post">
+    <input type="text" name="username" placeholder="帳號">
+    <input type="password" name="password" placeholder="密碼">
+    <input type="submit" value="送出">
+</form>
+
+
+</body>
