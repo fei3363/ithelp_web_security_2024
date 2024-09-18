@@ -48,7 +48,12 @@ app.post('/submit', (req, res) => {
   res.send(`你的帳號是 ${username}，密碼是 ${password}`);
 });
 
-
+// 設定重新導向的路由
+app.get('/redirect', (req, res) => {
+  const url = req.query.url;
+  res.writeHead(302, { 'Location': url });
+  res.end();
+});
 
 // 啟動伺服器
 app.listen(port, () => {
