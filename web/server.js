@@ -55,6 +55,20 @@ app.get('/redirect', (req, res) => {
   res.end();
 });
 
+const { handleMethod, handleStatus } = require('./routes/httpHandlers');
+
+// 處理所有 HTTP 方法的路由
+app.all('/method', handleMethod);
+
+// 狀態碼處理路由
+app.all('/status/:code', handleStatus);
+
+const { authenticateBasic, protectedRoute } = require('./routes/authHandler');
+
+// 設定受保護的路由
+app.get('/protected', authenticateBasic, protectedRoute);
+
+
 // 啟動伺服器
 app.listen(port, () => {
   // 當伺服器成功啟動時，在控制台輸出訊息
