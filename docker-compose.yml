@@ -8,9 +8,11 @@ services:
       - "3000:3000"
     environment:
       - MONGODB_URI=mongodb://mongo:27017/myapp
+      - POSTGRES_URI=postgresql://postgres:postgresPassword@postgres:5432/myapp
       - NODE_ENV=development
     depends_on:
       - mongo
+      - postgres
     volumes:
       - ./web:/usr/src/app
       - /usr/src/app/node_modules
@@ -23,5 +25,17 @@ services:
     volumes:
       - mongodb_data:/data/db
 
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=myapp
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgresPassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 volumes:
   mongodb_data:
+  postgres_data:

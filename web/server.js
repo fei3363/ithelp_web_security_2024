@@ -1,6 +1,9 @@
 // 引入模組
 const express = require('express');
 const path = require('path');
+const userRoutes = require('./routes/userRoutes');
+
+
 
 
 const app = express();
@@ -68,6 +71,7 @@ const { authenticateBasic, protectedRoute } = require('./routes/authHandler');
 // 設定受保護的路由
 app.get('/protected', authenticateBasic, protectedRoute);
 
+app.use('/api/users', userRoutes);
 
 // 啟動伺服器
 app.listen(port, () => {
