@@ -2,13 +2,34 @@
 const express = require('express');
 const path = require('path');
 const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
+const session = require('express-session');
 
-
-
+const { handleMethod, handleStatus } = require('./routes/httpHandlers');
+const { authenticateBasic, protectedRoute } = require('./routes/authHandler');
 
 const app = express();
 // 設定伺服器監聽的埠號
 const port = 3000;
+
+// 使用 express.json() 來解析 JSON 格式的請求
+app.use(express.json());
+
+// 使用 express.urlencoded() 來解析 URL 編碼的請求
+app.use(express.urlencoded({ extended: true }));
+
+// 使用 session Middleware 來啟用 session 功能
+app.use(session({
+  secret: 'your_session_secret', // Hard-coded 密鑰，應該要更換
+  // secret: process.env.SESSION_SECRET, // 從環境變數取得密鑰，比較安全
+  resave: false, // 是否重新保存 session
+  saveUninitialized: true, // 是否保存未初始化的 session
+  cookie: { secure: false } // 在非 HTTPS 環境下也能使用 session
+  // cookie: { secure: true } // 在 HTTPS 環境下使用 session
+}));
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // 設定根路徑
 app.get('/', (req, res) => {
@@ -37,12 +58,6 @@ app.get('/search', (req, res) => {
   res.send(`你搜尋的關鍵字是：${keyword}`);
 });
 
-// 使用 express.json() 來解析 JSON 格式的請求
-app.use(express.json());
-
-// 使用 express.urlencoded() 來解析 URL 編碼的請求
-app.use(express.urlencoded({ extended: true }));
-
 // 設定表單提交路由
 app.post('/submit', (req, res) => {
   // 取得 POST 請求的參數
@@ -58,7 +73,45 @@ app.get('/redirect', (req, res) => {
   res.end();
 });
 
-const { handleMethod, handleStatus } = require('./routes/httpHandlers');
+// 設定註冊的路由
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
+// 設定登入的路由
+app.get('/login', (req, res) => {
+  // 如果使用者已登入
+  if (req.session.userId) {
+    // 重新導向到 dashboard
+    return res.redirect('/dashboard');
+  }
+  // 如果使用者未登入，回傳 login.html 檔案
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+
+app.get('/dashboard', (req, res) => {
+  if (req.session.userId) {
+    res.render('dashboard', {
+      username: req.session.username,
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+// // 設定 dashboard
+// app.get('/dashboard', (req, res) => {
+//   // 如果使用者已登入
+//   if (req.session.userId) {
+//     // 取得使用者 ID
+//     const userId = req.session.userId;
+//     // 回傳 dashboard.html 檔案
+//     return res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+//   }
+//   // 如果使用者未登入，重新導向到登入頁面
+//   res.redirect('/login');
+// });
 
 // 處理所有 HTTP 方法的路由
 app.all('/method', handleMethod);
@@ -66,12 +119,12 @@ app.all('/method', handleMethod);
 // 狀態碼處理路由
 app.all('/status/:code', handleStatus);
 
-const { authenticateBasic, protectedRoute } = require('./routes/authHandler');
-
 // 設定受保護的路由
 app.get('/protected', authenticateBasic, protectedRoute);
 
 app.use('/api/users', userRoutes);
+
+app.use('/api/auth', authRoutes);
 
 // 啟動伺服器
 app.listen(port, () => {
