@@ -24,7 +24,9 @@ app.use(session({
   // secret: process.env.SESSION_SECRET, // 從環境變數取得密鑰，比較安全
   resave: false, // 是否重新保存 session
   saveUninitialized: true, // 是否保存未初始化的 session
-  cookie: { secure: false } // 在非 HTTPS 環境下也能使用 session
+  cookie: { 
+    httpOnly: false, // 是否只允許 JS 存取 cookie
+    secure: false } // 在非 HTTPS 環境下也能使用 session
   // cookie: { secure: true } // 在 HTTPS 環境下使用 session
 }));
 
