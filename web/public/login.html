@@ -66,6 +66,19 @@
             
             <label for="password">密碼</label>
             <input type="password" id="password" name="password" required>
+
+            <!-- 安全/不安全切換 -->
+            <label for="safemode">安全模式</label>
+            <div>
+                <input type="radio" id="safemode-true" name="safemode" value="true" checked>
+                <label for="safemode-true">安全</label>
+            </div>
+            <div>
+                <input type="radio" id="safemode-false" name="safemode" value="false">
+                <label for="safemode-false">不安全</label>
+            </div>
+            
+            
             
             <button type="submit">登入</button>
         </form>
@@ -78,6 +91,11 @@
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            
+            // 取得安全模式的值
+            const safemode = document.querySelector('input[name="safemode"]:checked').value;
+
+
             const errorMessage = document.getElementById('errorMessage');
             
             try {
@@ -86,7 +104,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ username, password }),
+                    body: JSON.stringify({ username, password, safemode }),
                 });
                 
                 if (response.ok) {
@@ -97,7 +115,7 @@
                     window.location.href = '/dashboard';
                 } else {
                     const error = await response.json();
-                    errorMessage.textContent = error.message || '登入失敗，請檢查您的使用者名和密碼';
+                    errorMessage.textContent = error.message || '登入失敗，請檢查您的帳號和密碼';
                 }
             } catch (error) {
                 errorMessage.textContent = '發生錯誤，請稍後再試';
