@@ -3,10 +3,12 @@ const express = require('express');
 const path = require('path');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
+const articlesRouter = require('./routes/articlesRouter');
 const session = require('express-session');
 
 const { handleMethod, handleStatus } = require('./routes/httpHandlers');
 const { authenticateBasic, protectedRoute } = require('./routes/authHandler');
+
 
 const app = express();
 // 設定伺服器監聽的埠號
@@ -127,6 +129,8 @@ app.get('/protected', authenticateBasic, protectedRoute);
 app.use('/api/users', userRoutes);
 
 app.use('/api/auth', authRoutes);
+
+app.use('/api/articles', articlesRouter);
 
 // 啟動伺服器
 app.listen(port, () => {
