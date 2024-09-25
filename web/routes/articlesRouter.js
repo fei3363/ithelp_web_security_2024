@@ -8,4 +8,8 @@ router.post('/', articleController.createArticle);
 router.put('/:id', articleController.updateArticle);
 router.delete('/:id', articleController.deleteArticle);
 
+router.get('/space/:id', articleController.getArticleSpace2Comment);
+
+
+
 module.exports = router;

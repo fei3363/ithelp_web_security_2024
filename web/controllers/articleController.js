@@ -10,6 +10,7 @@ const articlesHandler = {
             res.status(500).json({ error: error.message });
         }
     },
+    // 
 
     // 取得單一文章
     async getArticle(req, res) {
@@ -29,6 +30,7 @@ const articlesHandler = {
             res.status(500).json({ error: error.message });
         }
     },
+
 
     // 新增文章
     async createArticle(req, res) {
@@ -83,7 +85,38 @@ const articlesHandler = {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
+    },
+
+    async getArticleSpace2Comment(req, res) {
+        const { id } = req.params;
+        try {
+            // 基本的安全檢查
+            if (!/^\d+$/.test(id)) {
+                // 檢查是否包含空格
+                if (/\s/.test(id)) {
+                    return res.status(400).json({ message: '檢測到非法字符（空格）' });
+                }
+        
+
+                // 執行查詢
+                const result = await db.query(`SELECT * FROM articles WHERE id = ${id}`);
+                if (result.rows.length === 0) {
+                    return res.status(404).json({ message: '文章不存在' });
+                }
+                res.json(result.rows[0]);
+            } else {
+                // 如果是純數字，直接執行查詢
+                const result = await db.query(`SELECT * FROM articles WHERE id = ${id}`);
+                if (result.rows.length === 0) {
+                    return res.status(404).json({ message: '文章不存在' });
+                }
+                res.json(result.rows[0]);
+            }
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
     }
+
 };
 
 module.exports = articlesHandler;
