@@ -4,6 +4,8 @@ const path = require('path');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const articlesRouter = require('./routes/articlesRouter');
+
+const fileRoutes = require('./routes/file.routes');
 const session = require('express-session');
 
 const { handleMethod, handleStatus } = require('./routes/httpHandlers');
@@ -131,6 +133,16 @@ app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 
 app.use('/api/articles', articlesRouter);
+
+app.use('/api/files', fileRoutes);
+
+
+app.get('/upload', (req, res) => {
+  res.render('upload');
+});
+
+app.use('/files', express.static(path.join(__dirname, 'upload')));
+
 
 // 啟動伺服器
 app.listen(port, () => {

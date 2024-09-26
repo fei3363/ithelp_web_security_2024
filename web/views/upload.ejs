@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>檔案管理系統</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>檔案管理系統</h1>
+
+    <h2>上傳新檔案</h2>
+    <form action="/api/files" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">上傳</button>
+    </form>
+
+    <h2>檔案列表</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>名稱</th>
+                <th>類型</th>
+                <th>建立時間</th>
+                <th>更新時間</th>
+                <th>功能</th>
+            </tr>
+        </thead>
+        <tbody id="fileList">
+            <!-- 檔案列表將通過 JavaScript 動態填充 -->
+        </tbody>
+    </table>
+
+    <script>
+        // 取得檔案列表
+        function getFiles() {
+            fetch('/api/files')
+                .then(response => response.json())
+                .then(files => {
+                    const fileList = document.getElementById('fileList');
+                    fileList.innerHTML = '';
+                    files.forEach(file => {
+                        fileList.innerHTML += `
+                            <tr>
+                                <td>${file.id}</td>
+                                <td>${file.name}</td>
+                                <td>${file.type}</td>
+                                <td>${new Date(file.creat_time).toLocaleString()}</td>
+                                <td>${new Date(file.update_time).toLocaleString()}</td>
+                                <td>
+                                    <button onclick="downloadFile(${file.id})">下載</button>
+                                    <button onclick="deleteFile(${file.id})">刪除</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // 下載檔案
+        function downloadFile(id) {
+            window.location.href = `/api/files/${id}`;
+        }
+
+        // 刪除檔案
+        function deleteFile(id) {
+            if (confirm('確定要刪除這個檔案嗎？')) {
+                fetch(`/api/files/${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('檔案已成功刪除');
+                            getFiles();
+                        } else {
+                            alert('刪除檔案時發生錯誤');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+
+        // 頁面載入時取得檔案列表
+        document.addEventListener('DOMContentLoaded', getFiles);
+    </script>
+</body>
+</html>

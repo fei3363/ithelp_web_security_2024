@@ -16,7 +16,7 @@ services:
     volumes:
       - ./web:/usr/src/app
       - /usr/src/app/node_modules
-    command: sh -c "npm install && npm start"
+    command: sh -c "npm run db:migrate && npm install && npm start"
 
   mongo:
     image: mongo:latest
