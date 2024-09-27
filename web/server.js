@@ -1,15 +1,20 @@
 // 引入模組
 const express = require('express');
 const path = require('path');
+
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const articlesRouter = require('./routes/articlesRouter');
+const productRoutes = require('./routes/productRoutes');
 
 const fileRoutes = require('./routes/file.routes');
 const session = require('express-session');
 
 const { handleMethod, handleStatus } = require('./routes/httpHandlers');
 const { authenticateBasic, protectedRoute } = require('./routes/authHandler');
+
+const connectDB = require('./db/mongoose'); // 引入 MongoDB 連接
+connectDB(); // 連接 MongoDB
 
 
 const app = express();
@@ -136,6 +141,7 @@ app.use('/api/articles', articlesRouter);
 
 app.use('/api/files', fileRoutes);
 
+app.use('/api/product', productRoutes);
 
 app.get('/upload', (req, res) => {
   res.render('upload');
