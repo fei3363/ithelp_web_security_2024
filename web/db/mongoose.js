@@ -1,6 +1,7 @@
 // db/mongoose.js
 
 const mongoose = require('mongoose');
+mongoose.set('sanitizeFilter', false); // 6.0.0 版本以上才有，但這是不安全的設定: 關閉自動過濾
 
 // 連接 MongoDB
 const connectDB = async () => {
