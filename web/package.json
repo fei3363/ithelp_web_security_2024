@@ -16,7 +16,8 @@
     "sequelize": "^6.6.5",
     "sequelize-cli": "^6.2.0",
     "multer": "^1.4.3",
-    "mongoose": "^6.0.0"
+    "mongoose": "^6.0.0",
+    "libxmljs": "^1.0.7"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

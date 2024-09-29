@@ -1,6 +1,7 @@
 // 引入模組
 const express = require('express');
 const path = require('path');
+const libxmljs = require('libxmljs');
 
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -149,6 +150,20 @@ app.get('/upload', (req, res) => {
 
 app.use('/files', express.static(path.join(__dirname, 'upload')));
 
+app.use(express.text({ type: 'application/xml' }));
+
+app.post('/load_xml', async function (req, res) {
+
+  console.log('Received XML:', req.body);
+  try {
+      const xml = req.body;
+      const doc = libxmljs.parseXml(xml, {noent: true});
+      res.send(doc.toString({format: true}));
+  } catch (err) {
+      res.send(err.toString());
+      res.sendStatus(500);
+  }
+});
 
 // 啟動伺服器
 app.listen(port, () => {
