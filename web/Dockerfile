@@ -17,6 +17,9 @@ RUN npm install --save sequelize pg pg-hstore
 # 安裝 MongoDB 驅動（使用 MongoDB）
 RUN npm install --save mongoose
 
+# 安裝 zip 工具
+RUN apt-get update && apt-get install -y zip
+
 # 複製專案文件
 COPY . .
 

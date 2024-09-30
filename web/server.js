@@ -2,6 +2,8 @@
 const express = require('express');
 const path = require('path');
 const libxmljs = require('libxmljs');
+const fs = require('fs');
+const { exec } = require('child_process');
 
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -163,6 +165,48 @@ app.post('/load_xml', async function (req, res) {
       res.send(err.toString());
       res.sendStatus(500);
   }
+});
+
+app.post('/compress', async function (req, res) {
+    const { filename } = req.body;
+
+    // 如果 compress 資料夾不存在，則建立 compress 資料夾
+    if (!fs.existsSync('compress')) {
+        fs.mkdirSync('compress');
+    }
+
+    // 使用 exec 壓縮檔案
+    exec(`zip compress/${filename}.zip test.txt`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            res.status(500).send(`Compression error: ${error}`);
+            return;
+        }
+
+        
+
+        // 檢查壓縮檔案是否存在
+        const filePath = path.join(__dirname, 'compress', `${filename}.zip`);
+        if (fs.existsSync(filePath)) {
+            // 發送壓縮檔案給使用者
+            res.download(filePath, `${filename}.zip`, (err) => {
+                if (err) {
+                    console.error(`Download error: ${err}`);
+                    res.status(500).send('Download error');
+                } else {
+                    // 清空 compress 資料夾中的檔案
+                    exec('rm compress/*', (rmError) => {
+                        if (rmError) {
+                            console.error(`Error cleaning compress folder: ${rmError}`);
+                        }
+                    });
+                }
+            });
+        } else {
+            // 如果檔案不存在，回傳錯誤訊息與 stdout
+            res.status(404).send(stdout+'File not found');
+        }
+    });
 });
 
 // 啟動伺服器
