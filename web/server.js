@@ -4,7 +4,15 @@ const path = require('path');
 const libxmljs = require('libxmljs');
 const fs = require('fs');
 const { exec } = require('child_process');
+const bodyParser = require('body-parser');
+const nunjucks = require('nunjucks');
 
+// 引入各個 SSTI 模組的路由
+const jsRenderDemo = require('./ssti/jsRenderDemo');
+const pugJSDemo = require('./ssti/pugJSDemo');
+const nunjucksDemo = require('./ssti/nunjucksDemo');
+
+// 引入路由
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const articlesRouter = require('./routes/articlesRouter');
@@ -208,6 +216,20 @@ app.post('/compress', async function (req, res) {
         }
     });
 });
+
+// 使用 body-parser 來解析 JSON
+app.use(bodyParser.json());
+
+app.use('/ssti', jsRenderDemo);
+app.use('/ssti', pugJSDemo);
+
+// 設定 Nunjucks 模板引擎，並使用 .njk 擴展名
+nunjucks.configure('views', {
+  autoescape: false,  // 預設為 true，防止 XSS 攻擊
+  express: app
+});
+app.set('view engine', 'njk');
+app.use('/ssti', nunjucksDemo);
 
 // 啟動伺服器
 app.listen(port, () => {

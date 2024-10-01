@@ -20,7 +20,12 @@
     進入 <a href="/login">登入頁面</a><br>
     進入 <a href="/dashboard">使用者儀表板</a>
 
-    <script>
+
+    <h2>Server-Side Template Injection (SSTI) 測試</h2>
+    進入 <a href="/ssti/JsRender-demo">JsRender SSTI 測試</a><br>
+    進入 <a href="/ssti/PugJS-demo">PugJS SSTI 測試</a><br>
+    進入 <a href="/ssti/Nunjucks-demo">Nunjucks SSTI 測試</a><br>
+      <script>
         function fetchMessage() {
             fetch('/api/hello')
                 .then(response => response.json())

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JsRender SSTI Demo</title>
+</head>
+<body>
+    <h1>JsRender SSTI 測試</h1>
+    
+    <form method="POST" action="/ssti/JsRender-demo">
+        <label for="payload">輸入範例 (如：{{:7*7}}):</label><br>
+        <input type="text" id="payload" name="payload" placeholder="test">
+        <button type="submit">提交</button>
+    </form>
+    
+    <p>結果: </p>
+</body>
+</html>
