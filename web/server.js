@@ -13,6 +13,7 @@ const pugJSDemo = require('./ssti/pugJSDemo');
 const nunjucksDemo = require('./ssti/nunjucksDemo');
 
 // 引入路由
+const brokenApiRouter = require('./routes/brokenApiRouter');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const articlesRouter = require('./routes/articlesRouter');
@@ -153,6 +154,16 @@ app.use('/api/articles', articlesRouter);
 app.use('/api/files', fileRoutes);
 
 app.use('/api/product', productRoutes);
+
+app.use(express.json());
+
+app.use('/api/broken', brokenApiRouter);
+
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
 
 app.get('/upload', (req, res) => {
   res.render('upload');
