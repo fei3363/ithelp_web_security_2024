@@ -20,7 +20,8 @@
     "libxmljs": "^1.0.7",
     "jsrender": "^1.0.0",
     "pug": "^3.0.2",
-    "nunjucks": "^3.2.3"
+    "nunjucks": "^3.2.3",
+    "node-serialize": "0.0.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

@@ -6,6 +6,8 @@ const fs = require('fs');
 const { exec } = require('child_process');
 const bodyParser = require('body-parser');
 const nunjucks = require('nunjucks');
+const session = require('express-session');
+
 
 // 引入各個 SSTI 模組的路由
 const jsRenderDemo = require('./ssti/jsRenderDemo');
@@ -18,9 +20,9 @@ const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const articlesRouter = require('./routes/articlesRouter');
 const productRoutes = require('./routes/productRoutes');
-
 const fileRoutes = require('./routes/file.routes');
-const session = require('express-session');
+const serializeRouter = require('./routes/serializeRouter');
+
 
 const { handleMethod, handleStatus } = require('./routes/httpHandlers');
 const { authenticateBasic, protectedRoute } = require('./routes/authHandler');
@@ -159,6 +161,8 @@ app.use(express.json());
 
 app.use('/api/broken', brokenApiRouter);
 
+app.use('/api/serialize', serializeRouter);
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -241,6 +245,8 @@ nunjucks.configure('views', {
 });
 app.set('view engine', 'njk');
 app.use('/ssti', nunjucksDemo);
+
+
 
 // 啟動伺服器
 app.listen(port, () => {
