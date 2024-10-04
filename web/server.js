@@ -7,7 +7,7 @@ const { exec } = require('child_process');
 const bodyParser = require('body-parser');
 const nunjucks = require('nunjucks');
 const session = require('express-session');
-
+const axios = require('axios');
 
 // 引入各個 SSTI 模組的路由
 const jsRenderDemo = require('./ssti/jsRenderDemo');
@@ -246,6 +246,22 @@ nunjucks.configure('views', {
 app.set('view engine', 'njk');
 app.use('/ssti', nunjucksDemo);
 
+app.use(bodyParser.json());
+app.get('/fetch', async (req, res) => {
+  const { url } = req.query;
+  
+  if (!url) {
+    return res.status(400).send('URL parameter is required');
+  }
+
+  try {
+    const response = await axios.get(url);
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching URL');
+  }
+});
 
 
 // 啟動伺服器

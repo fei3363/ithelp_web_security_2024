@@ -13,10 +13,19 @@ services:
     depends_on:
       - mongo
       - postgres
+      - internal-api
     volumes:
       - ./web:/usr/src/app
       - /usr/src/app/node_modules
     command: sh -c "npm run db:migrate && npm install && npm start"
+
+  internal-api:
+    build:
+      context: ./internal-api
+      dockerfile: Dockerfile
+    environment:
+      - SECRET_KEY=supersecretkey123
+    command: sh -c "npm install && npm start"
 
   mongo:
     image: mongo:latest
@@ -37,6 +46,7 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data 
+
 volumes:
   mongodb_data:
   postgres_data:
