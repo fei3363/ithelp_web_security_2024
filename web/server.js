@@ -22,6 +22,7 @@ const articlesRouter = require('./routes/articlesRouter');
 const productRoutes = require('./routes/productRoutes');
 const fileRoutes = require('./routes/file.routes');
 const serializeRouter = require('./routes/serializeRouter');
+const authJWTRouter = require('./routes/authJWTRouter');
 
 
 const { handleMethod, handleStatus } = require('./routes/httpHandlers');
@@ -162,6 +163,8 @@ app.use(express.json());
 app.use('/api/broken', brokenApiRouter);
 
 app.use('/api/serialize', serializeRouter);
+
+app.use('/api/authJWT', authJWTRouter);
 
 
 app.use((err, req, res, next) => {
