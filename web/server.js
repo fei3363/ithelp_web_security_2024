@@ -24,6 +24,7 @@ const fileRoutes = require('./routes/file.routes');
 const serializeRouter = require('./routes/serializeRouter');
 const authJWTRouter = require('./routes/authJWTRouter');
 const cacheRouter = require('./routes/cacheRouter');
+const pathTraversalRouter = require('./routes/pathTraversalRouter');
 
 
 const { handleMethod, handleStatus } = require('./routes/httpHandlers');
@@ -167,8 +168,9 @@ app.use('/api/serialize', serializeRouter);
 
 app.use('/api/authJWT', authJWTRouter);
 
-
 app.use('/api/cache', cacheRouter);
+
+app.use('/api/pathTraversal', pathTraversalRouter);
 
 
 app.use((err, req, res, next) => {
