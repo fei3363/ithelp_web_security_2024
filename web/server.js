@@ -125,7 +125,7 @@ app.get('/login', (req, res) => {
 
 app.get('/dashboard', (req, res) => {
   if (req.session.userId) {
-    res.render('dashboard', {
+    res.render('dashboard.ejs', {
       username: req.session.username,
     });
   } else {
