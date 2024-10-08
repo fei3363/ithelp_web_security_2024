@@ -3,11 +3,15 @@ const express = require('express');
 const path = require('path');
 const libxmljs = require('libxmljs');
 const fs = require('fs');
-const { exec } = require('child_process');
 const bodyParser = require('body-parser');
 const nunjucks = require('nunjucks');
 const session = require('express-session');
 const axios = require('axios');
+const WebSocket = require('ws');
+const http = require('http');
+
+const { exec } = require('child_process');
+const { initWebSocket } = require('./websocket');
 
 // 引入各個 SSTI 模組的路由
 const jsRenderDemo = require('./ssti/jsRenderDemo');
@@ -25,6 +29,7 @@ const serializeRouter = require('./routes/serializeRouter');
 const authJWTRouter = require('./routes/authJWTRouter');
 const cacheRouter = require('./routes/cacheRouter');
 const pathTraversalRouter = require('./routes/pathTraversalRouter');
+const inventoryRoutes = require('./routes/inventoryRoutes');
 
 
 const { handleMethod, handleStatus } = require('./routes/httpHandlers');
@@ -172,6 +177,7 @@ app.use('/api/cache', cacheRouter);
 
 app.use('/api/pathTraversal', pathTraversalRouter);
 
+app.use('/api/inventory', inventoryRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -272,9 +278,11 @@ app.get('/fetch', async (req, res) => {
   }
 });
 
+// 設定 WebSocket 路由
+const server = http.createServer(app);
+initWebSocket(server);
 
-// 啟動伺服器
-app.listen(port, () => {
-  // 當伺服器成功啟動時，在控制台輸出訊息
-  console.log(`Server running at http://localhost:${port}`);
+// 使用 server 而不是 app 來監聽端口
+server.listen(port, () => {
+  console.log(`HTTP and WebSocket server running at http://localhost:${port}`);
 });
