@@ -12,6 +12,7 @@ const http = require('http');
 
 const { exec } = require('child_process');
 const { initWebSocket } = require('./websocket');
+const { startApolloServer } = require('./graphql/server');
 
 // 引入各個 SSTI 模組的路由
 const jsRenderDemo = require('./ssti/jsRenderDemo');
@@ -61,8 +62,7 @@ app.use(session({
   // cookie: { secure: true } // 在 HTTPS 環境下使用 session
 }));
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+
 
 // 設定根路徑
 app.get('/', (req, res) => {
@@ -122,8 +122,13 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.get('/dashboard', (req, res) => {
+
+  // 如果使用者已登入，回傳 dashboard.ejs 檔案
+  console.log(req.session.username);
   if (req.session.userId) {
     res.render('dashboard.ejs', {
       username: req.session.username,
@@ -133,18 +138,9 @@ app.get('/dashboard', (req, res) => {
   }
 });
 
-// // 設定 dashboard
-// app.get('/dashboard', (req, res) => {
-//   // 如果使用者已登入
-//   if (req.session.userId) {
-//     // 取得使用者 ID
-//     const userId = req.session.userId;
-//     // 回傳 dashboard.html 檔案
-//     return res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
-//   }
-//   // 如果使用者未登入，重新導向到登入頁面
-//   res.redirect('/login');
-// });
+app.get('/upload', (req, res) => {
+  res.render('upload.ejs');
+});
 
 // 處理所有 HTTP 方法的路由
 app.all('/method', handleMethod);
@@ -184,9 +180,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
-app.get('/upload', (req, res) => {
-  res.render('upload');
-});
+
 
 app.use('/files', express.static(path.join(__dirname, 'upload')));
 
@@ -258,6 +252,8 @@ nunjucks.configure('views', {
   autoescape: false,  // 預設為 true，防止 XSS 攻擊
   express: app
 });
+
+
 app.set('view engine', 'njk');
 app.use('/ssti', nunjucksDemo);
 
@@ -282,7 +278,12 @@ app.get('/fetch', async (req, res) => {
 const server = http.createServer(app);
 initWebSocket(server);
 
-// 使用 server 而不是 app 來監聽端口
-server.listen(port, () => {
-  console.log(`HTTP and WebSocket server running at http://localhost:${port}`);
-});
+async function startServer() {
+  await startApolloServer(app);
+  server.listen(port, () => {
+    console.log(`HTTP and WebSocket server running at http://localhost:${port}`);
+    console.log(`🚀 GraphQL server ready at http://localhost:${port}/graphql`);
+  });
+}
+
+startServer();
