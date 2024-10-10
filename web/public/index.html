@@ -1,38 +1,157 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>測試網頁應用</title>
+    <title>測試網頁應用 - 歡迎光臨!</title>
     <style>
-        body { font-family: "微軟正黑體", Arial, sans-serif; text-align: center; padding-top: 50px; }
-        #message { margin-top: 20px; font-weight: bold; }
+        body { 
+            font-family: "微軟正黑體", Arial, sans-serif; 
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 { color: #2c3e50; }
+        .route-list { 
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .route-group { 
+            flex: 1 1 300px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .route-group h3 { 
+            margin-top: 0;
+            color: #e67e22;
+            border-bottom: 2px solid #e67e22;
+            padding-bottom: 5px;
+        }
+        .route-item { margin-bottom: 10px; }
+        a { 
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover { text-decoration: underline; }
+        #message { 
+            margin-top: 20px; 
+            font-weight: bold;
+            color: #27ae60;
+        }
     </style>
 </head>
 <body>
-    <h1>歡迎來到測試網頁</h1>
-    <p>這是一個由 Express.js 建立的簡單測試頁面</p>
-    <button onclick="fetchMessage()">從 API 取得資訊</button>
+    <h1>歡迎光臨測試網頁!</h1>
+    <p>這是一個用 Express.js 建立的漏洞測試網站喔!</p>
+    
+    <button onclick="fetchMessage()">點我跟 API say hello~</button>
     <div id="message"></div>
 
-    進入 <a href="/form">表單頁面</a><br>
-    進入 <a href="/register">註冊頁面</a><br>
-    進入 <a href="/login">登入頁面</a><br>
-    進入 <a href="/dashboard">使用者儀表板</a>
+    <h2>路由一覽表</h2>
+    <div class="route-list">
+        <div class="route-group">
+            <h3>基本路由</h3>
+            <div class="route-item"><a href="/">首頁</a></div>
+            <div class="route-item"><a href="/form">表單頁面</a></div>
+            <div class="route-item"><a href="/register">註冊頁面</a></div>
+            <div class="route-item"><a href="/login">登入頁面</a></div>
+            <div class="route-item"><a href="/dashboard">使用者儀表板</a></div>
+            <div class="route-item"><a href="/upload">上傳頁面</a></div>
+            <div class="route-item"><a href="/search?keyword=test">搜尋 (GET)</a></div>
+            <div class="route-item"><a href="/redirect?url=https://feifei.tw">重新導向</a></div>
+        </div>
 
+        <div class="route-group">
+            <h3>文章相關 API</h3>
+            <div class="route-item"><a href="/api/articles">所有文章</a></div>
+            <div class="route-item"><a href="/api/articles/1">特定文章 (ID: 1)</a></div>
+            <div class="route-item">新增文章 (POST /api/articles)</div>
+            <div class="route-item">更新文章 (PUT /api/articles/1)</div>
+            <div class="route-item">刪除文章 (DELETE /api/articles/1)</div>
+        </div>
 
-    <h2>Server-Side Template Injection (SSTI) 測試</h2>
-    進入 <a href="/ssti/JsRender-demo">JsRender SSTI 測試</a><br>
-    進入 <a href="/ssti/PugJS-demo">PugJS SSTI 測試</a><br>
-    進入 <a href="/ssti/Nunjucks-demo">Nunjucks SSTI 測試</a><br>
-      <script>
+        <div class="route-group">
+            <h3>使用者相關 API</h3>
+            <div class="route-item"><a href="/api/users">所有使用者</a></div>
+            <div class="route-item"><a href="/api/users/1">特定使用者 (ID: 1)</a></div>
+            <div class="route-item">新增使用者 (POST /api/users)</div>
+            <div class="route-item">更新使用者 (PUT /api/users/1)</div>
+            <div class="route-item">刪除使用者 (DELETE /api/users/1)</div>
+        </div>
+
+        <div class="route-group">
+            <h3>認證相關 API</h3>
+            <div class="route-item">登入 (POST /api/auth/login)</div>
+            <div class="route-item">登出 (POST /api/auth/logout)</div>
+            <div class="route-item">JWT 登入 (POST /api/authJWT/login)</div>
+            <div class="route-item">JWT 更新 (POST /api/authJWT/refresh)</div>
+            <div class="route-item"><a href="/api/authJWT/protected">受保護路由</a></div>
+        </div>
+
+        <div class="route-group">
+            <h3>產品相關 API</h3>
+            <div class="route-item"><a href="/api/product/list">所有產品</a></div>
+            <div class="route-item"><a href="/api/product/search?keyword=手機">搜尋產品</a></div>
+            <div class="route-item"><a href="/api/product/filter?category=3C">過濾產品</a></div>
+            <div class="route-item"><a href="/api/product/filter-by-price?min=1000&max=5000">價格過濾</a></div>
+        </div>
+
+        <div class="route-group">
+            <h3>檔案相關 API</h3>
+            <div class="route-item"><a href="/api/files">所有檔案</a></div>
+            <div class="route-item"><a href="/api/files/1">特定檔案 (ID: 1)</a></div>
+            <div class="route-item">上傳檔案 (POST /api/files)</div>
+            <div class="route-item">更新檔案 (PUT /api/files/1)</div>
+            <div class="route-item">刪除檔案 (DELETE /api/files/1)</div>
+        </div>
+
+        <div class="route-group">
+            <h3>其他 API</h3>
+            <div class="route-item"><a href="/api/inventory">庫存清單</a></div>
+            <div class="route-item">更新庫存 (POST /api/inventory/update)</div>
+            <div class="route-item"><a href="/api/cache">快取操作</a></div>
+            <div class="route-item"><a href="/api/cache/flush">清空快取</a></div>
+            <div class="route-item"><a href="/api/pathTraversal">讀取檔案</a></div>
+            <div class="route-item">序列化 (POST /api/serialize)</div>
+        </div>
+
+        <div class="route-group">
+            <h3>SSTI 測試路由</h3>
+            <div class="route-item"><a href="/ssti/JsRender-demo">JsRender SSTI 測試</a></div>
+            <div class="route-item"><a href="/ssti/PugJS-demo">PugJS SSTI 測試</a></div>
+            <div class="route-item"><a href="/ssti/Nunjucks-demo">Nunjucks SSTI 測試</a></div>
+        </div>
+
+        <div class="route-group">
+            <h3>測試用路由</h3>
+            <div class="route-item"><a href="/method">HTTP 方法測試</a></div>
+            <div class="route-item"><a href="/status/200">狀態碼測試 (200)</a></div>
+            <div class="route-item"><a href="/protected">受保護路由 (Basic Auth)</a></div>
+        </div>
+
+        <div class="route-group">
+            <h3>GraphQL API</h3>
+            <div class="route-item"><a href="/graph">GraphQL Playground</a></div>
+            <div class="route-item">查詢所有: Query { users { id username email } }</div>
+            <div class="route-item">查詢特定使用者: Query { user(id: "1") { username posts { title } } }</div>
+            <div class="route-item">建立新使用者: Mutation { createUser(username: "newuser", email: "new@example.com", password: "password123") { id username } }</div>
+            <div class="route-item">危險查詢: Query { dangerousQuery(query: "console.log('Hello')") }</div>
+        </div>
+    </div>
+
+    <script>
         function fetchMessage() {
             fetch('/api/hello')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('message').innerText = data.message;
                 })
-                .catch(error => console.error('錯誤:', error));
+                .catch(error => console.error('哎呀,出錯了:', error));
         }
     </script>
 </body>
